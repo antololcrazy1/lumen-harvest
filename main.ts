@@ -1,12 +1,16 @@
-// A working best-game-01 entry (Node 22, standard library only): the game is this directory's
-// game/ folder, plain static files a desktop browser loads offline (game/index.html and its ES
-// modules, no library and no network request), and the program hands it in. It copies game/ and
-// screenshots/ from beside this file to /output and writes /output/dossier.json, the summary the
-// judge reads, with the vendored make.fun library. A starting point, not a winner: Block Dodger, a
-// plain 2D canvas game where a paddle dodges falling blocks and catches coins, with a title screen,
-// score, lives and levels, game over and restart, flat colours and no sound. Build your own game
-// (any genre, any library you vendor under game/, or none), put your 3 or 4 PNG or JPEG screenshots
-// in screenshots/ (the first by name is the cover) and run it.
+// Lumen Harvest — a make.fun best-game-01 entry (Node 22, standard library only).
+// The game is this directory's game/ folder: plain static files a desktop browser
+// loads offline (game/index.html and its ES modules, no library and no network
+// request), and this program hands it in. It copies game/ and screenshots/ from
+// beside this file to /output and writes /output/dossier.json, the summary the
+// judge reads, with the vendored make.fun library.
+//
+// The game itself: guide the last lantern through the Shattered Night — gather
+// falling starlight, chain combos up to x8, dash through danger, catch the golden
+// comet, grab shield / magnet / slow-time power-ups, and survive 10 waves of void
+// shards to restore the dawn. 3 lights, wave bonus, best score in localStorage,
+// fully synthesised WebAudio sound. Put 3 or 4 PNG or JPEG screenshots in
+// screenshots/ (the first by name is the cover) and run it.
 //
 // Serve it locally with `node serve.ts`, then open http://localhost:8080.
 // Outside the grader's container, MAKEFUN_OUTPUT_DIR stands in for /output:
@@ -19,6 +23,13 @@ import { buildDossier } from './vendor/makefun-game.ts';
 
 const here = fileURLToPath(new URL('.', import.meta.url));
 const out = process.env.MAKEFUN_OUTPUT_DIR ?? '/output';
+
+// Lumen Harvest must ship a playable entry point: refuse to hand in a
+// directory with no game to load, instead of silently copying an empty one.
+const entryPoint = join(here, 'game', 'index.html');
+if (!existsSync(entryPoint)) {
+  throw new Error(`Lumen Harvest entry point missing: ${entryPoint}`);
+}
 
 mkdirSync(out, { recursive: true });
 cpSync(join(here, 'game'), join(out, 'game'), { recursive: true });
